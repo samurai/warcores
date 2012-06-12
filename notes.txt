@@ -1,0 +1,50 @@
+_OVERVIEW_
+
+Initially, this will be mostly to manage the various bots as part of a user's profile, track their win/loss/draw, and allow for 
+organizing battles with different players.  Eventually, I'd like to build some meta-game into this to make it more interesting
+
+
+_DATABASE_
+
+CREATE TABLE users (
+id SERIAL,
+username varchar(50),
+password varchar(50),
+email varchar(50)
+);
+
+CREATE TABLE warriors (
+id SERIAL,
+name varchar(50),
+version integer,
+owner integer,
+notes text,
+code text
+);
+
+CREATE TABLE battle_results (
+id SERIAL,
+battle_time integer
+);
+-- need to suss out how to track the win/loss/draw along with what players/bots are involved
+-- also need a way to track pmars config
+
+_MECHANICS_
+
+This will certainly need to be expanded on.  
+
+Players will be able to upload redcode scripts that will be stored in the warriors table.  Updating a bot can be stored by usign the 
+same name and a newer version.  Battles will be logged in battle_results and considerations should be made for multiple (more than 2) 
+player/bot battles.  Initially, this might just be 1v1 support.
+
+
+_INTERFACE_
+
+* Overview page with info on current battles, bots, and opponents.  
+* Login page
+* Bots management page with list of all bots
+* Bot management page, for updating notes, viewing history, and updating codes
+* Battle config/request page for setting up battles, picking bots and opponents and setting pmars config
+* Battle overview page to review all battles
+* Battle review page to review a particular battle
+
