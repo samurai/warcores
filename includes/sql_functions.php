@@ -52,5 +52,32 @@ function SQL_loginUser($username, $password)
 }
 
 
+//warrior management functions
+
+function SQL_warriorExists($userid, $warrior_name)
+{
+	$userid = intval($userid);
+	$warrior_name = htmlentities($warrior_name, ENT_QUOTES);
+	$sql_checkWarrior = "SELECT id FROM warriors WHERE owner='$userid' AND name='$warrior_name'";
+	$row = pg_fetch_assoc(pg_query($sql_checkWarrior));
+	return isset($row['id']) && intval($row['id']) != 0;
+}
+
+function SQL_createWarrior($name, $notes, $code, $userid)
+{
+	$name = htmlentities($name, ENT_QUOTES);
+	$notes = htmlentities($notes, ENT_QUOTES);
+	$code = htmlentities($code, ENT_QUOTES);
+	$userid = intval($userid);
+	$create_time = time();
+	$sql_createWarrior = "INSERT INTO warriors (name, notes, code, owner) VALUES ('$name','$notes','$code','$userid') RETURNING id";
+	$row = pg_fetch_assoc(pg_query($sql_createWarrior));
+	if(isset($row['id']))
+	{
+		return $row['id'];
+	}
+	return 0;
+}
+
 ?>
 
