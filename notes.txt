@@ -25,19 +25,31 @@ notes text,
 code text
 );
 
-CREATE TABLE battle_results (
+CREATE TABLE battle (
 id SERIAL,
-battle_time integer
+rounds integer default 1,
+core_size integer default 8000,
+tie_cycles integer default 80000,
+max_size integer default 100,
+min_distance integer default 0,
+battle_time integer,
 );
--- need to suss out how to track the win/loss/draw along with what players/bots are involved
--- also need a way to track pmars config
 
-CREATE TABLE player_has_battle (
+CREATE TABLE battle_has_warrior (
+id SERIAL, 
+battleid integer,
+warriorid integer,
+position integer, -- to indicate what order the bots go in, this is 1-based, rather than zero
+);
+
+CREATE TABLE battle_has_result (
 id SERIAL,
-playerid integer,
-playernumber integer,  -- this one will track which order the players started in, allowing for more than 2 player matches?
-gameid integer,
-botid integer
+battleid integer, 
+warriorid integer,
+score integer,  -- value computed by pmars for overall effectiveness of all rounds, useless tho without the other infos
+win integer,
+draw integer,
+loss integer
 );
 
 _MECHANICS_
