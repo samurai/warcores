@@ -17,4 +17,16 @@ function isLoggedIn()
 	return isset($_SESSION['userid']) && intval($_SESSION['userid']) != 0;
 }
 
+function drawWarriorSelect()
+{
+	$warriors = SQL_getAllWarriors();
+	foreach($warriors as $playerid=>$player)
+	{
+		foreach($player['warriors'] as $warrior)
+		{
+			echo "<option value='".$warrior['id']."'>".$player['ownername']."->".$warrior['name']."</option>";
+		}
+	}
+}
+
 ?>

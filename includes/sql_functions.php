@@ -51,6 +51,15 @@ function SQL_loginUser($username, $password)
 	return $row;
 }
 
+function SQL_getPlayerByID($pid)
+{
+	if(intval($pid) == 0)
+	{
+		return Array();
+	}
+	$sql_getPlayer = "SELECT id,username,admin FROM players WHERE id='$pid'";
+	return pg_fetch_assoc(pg_query($sql_getPlayer));
+}
 
 //warrior management functions
 
@@ -77,6 +86,50 @@ function SQL_createWarrior($name, $notes, $code, $userid)
 		return $row['id'];
 	}
 	return 0;
+}
+
+function SQL_getAllWarriors()
+{
+	$sql_getWarriors = "SELECT id,name,owner FROM warriors ORDER BY owner ASC";
+	$res = pg_query($sql_getWarriors);
+	$warriors = Array();
+	while($row = pg_fetch_assoc($res))
+	{
+		if(!in_Array($row['owner'],array_keys($warriors)))
+		{
+			$player = SQL_getPlayerByID($row['owner']);
+			$warriors[$row['owner']] = Array('ownername'=>$player['username'],'warriors'=>Array());
+		}
+		$warriors[$row['owner']]['warriors'][$row['id']] = $row;
+	}
+
+	return $warriors;
+}
+
+//battle management functions
+
+function SQL_createBattle($rounds=1, $core_size=8000, $tie_cycles=80000, $max_size=100, $min_distance=0)
+{
+	$rounds = intval($rounds);
+	$core_size = intval($core_size);
+	$tie_cycles = intval($tie_cycles);
+	$max_Size = intval($max_size);
+	$min_distance = intval($min_distance);
+	$battle_time = time();
+	$sql_createBattle = "INSERT INTO battle (rounds, core_Size, tie_cycles, max_size, min_distance, battle_time) VALUES ('$rounds','$core_size','$tie_cycles','$max_size','$min_distance','$battle_time') RETURNING id";
+	$row = pg_fetch_assoc(pg_query($sql_createBattle));
+	$bid = $row['id'];
+	return $bid;
+}
+
+function SQL_addWarriorToBattle($battleid, $warriorid, $position)
+{
+	$battleid = intval($battleid);
+	$warriorid = intval($warriorid);
+	$position = intval($position);
+	$sql_addWarrior = "INSERT INTO battle_has_warrior (battleid, warriorid, position) VALUES ('$battleid','$warriorid','$position') RETURNING id";
+	$row = pg_fetch_assoc(pg_query($sql_addWarrior));
+	return $row['id']; //relationid
 }
 
 ?>
